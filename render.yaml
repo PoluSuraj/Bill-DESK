@@ -4,11 +4,14 @@ services:
     runtime: node
     plan: starter
     buildCommand: npm ci --legacy-peer-deps && npm run build
-    startCommand: npm run start
+    startCommand: HOSTNAME=0.0.0.0 PORT=$PORT npm run start
     autoDeploy: true
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: "20"
       - key: NPM_CONFIG_LEGACY_PEER_DEPS
         value: "true"
       - key: NEXT_PUBLIC_APP_URL
