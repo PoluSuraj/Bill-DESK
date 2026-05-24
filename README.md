@@ -15,6 +15,7 @@ Bill Desk is a premium multi-business bill generation and inventory management s
 1. Install dependencies with `npm install`
 2. Copy `.env.example` to `.env.local`
 3. Start the app with `npm run dev`
+4. Build production with `npm run build` and run it with `npm run start`
 
 ## Deploy
 - Render deployment is configured in `render.yaml`.
