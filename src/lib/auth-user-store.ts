@@ -27,18 +27,39 @@ type AuthUserRecord = {
   resetToken?: PasswordResetToken;
 };
 
-const authDataDir = process.env.AUTH_DATA_DIR || path.join(process.cwd(), "data");
-const USERS_FILE = path.join(authDataDir, "auth-users.json");
+const configuredAuthDataDir = process.env.AUTH_DATA_DIR;
 export const DEFAULT_ADMIN_PASSWORD = "ChangeMe@123";
 
-async function ensureUserStore() {
-  await fs.mkdir(path.dirname(USERS_FILE), { recursive: true });
+let resolvedUsersFile: string | null = null;
 
-  try {
-    await fs.access(USERS_FILE);
-  } catch {
-    await fs.writeFile(USERS_FILE, "[]\n", "utf8");
+async function resolveUsersFile() {
+  if (resolvedUsersFile) {
+    return resolvedUsersFile;
   }
+
+  const candidates = [
+    configuredAuthDataDir,
+    path.join("/tmp", "billdesk-auth"),
+    path.join(process.cwd(), "data")
+  ].filter(Boolean) as string[];
+
+  for (const directory of candidates) {
+    const usersFile = path.join(directory, "auth-users.json");
+    try {
+      await fs.mkdir(directory, { recursive: true });
+      await fs.access(usersFile).catch(() => fs.writeFile(usersFile, "[]\n", "utf8"));
+      resolvedUsersFile = usersFile;
+      return usersFile;
+    } catch {
+      // Try the next writable location. Render requires a disk before /var/data is writable.
+    }
+  }
+
+  throw new Error("Unable to initialize authentication storage. Please configure a writable AUTH_DATA_DIR.");
+}
+
+async function ensureUserStore() {
+  await resolveUsersFile();
 
   const users = await readUsers();
   const adminEmail = SOFTWARE_ADMIN_EMAIL.toLowerCase();
@@ -59,13 +80,22 @@ async function ensureUserStore() {
 }
 
 async function readUsers() {
-  const content = await fs.readFile(USERS_FILE, "utf8");
-  return JSON.parse(content) as AuthUserRecord[];
+  const usersFile = await resolveUsersFile();
+  const content = await fs.readFile(usersFile, "utf8");
+
+  try {
+    return JSON.parse(content) as AuthUserRecord[];
+  } catch {
+    await fs.writeFile(usersFile, "[]\n", "utf8");
+    return [];
+  }
 }
 
 async function writeUsers(users: AuthUserRecord[]) {
-  await fs.writeFile(USERS_FILE, `${JSON.stringify(users, null, 2)}\n`, "utf8");
+  const usersFile = await resolveUsersFile();
+  await fs.writeFile(usersFile, `${JSON.stringify(users, null, 2)}\n`, "utf8");
 }
+
 
 export async function findAuthUserByEmail(email: string) {
   await ensureUserStore();

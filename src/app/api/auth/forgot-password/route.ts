@@ -9,22 +9,26 @@ export async function POST(request: Request) {
     return jsonError("Registered email is required.", 400);
   }
 
-  const reset = await createPasswordResetToken(email);
+  try {
+    const reset = await createPasswordResetToken(email);
 
-  if (!reset) {
+    if (!reset) {
+      return jsonSuccess(
+        { delivered: true },
+        "If this email is registered, a password reset link has been prepared."
+      );
+    }
+
     return jsonSuccess(
-      { delivered: true },
-      "If this email is registered, a password reset link has been prepared."
+      {
+        delivered: true,
+        email: reset.email,
+        resetToken: reset.token,
+        expiresAt: reset.expiresAt
+      },
+      "Password reset token generated."
     );
+  } catch {
+    return jsonError("Unable to prepare reset right now. Please try again.", 500);
   }
-
-  return jsonSuccess(
-    {
-      delivered: true,
-      email: reset.email,
-      resetToken: reset.token,
-      expiresAt: reset.expiresAt
-    },
-    "Password reset token generated."
-  );
 }

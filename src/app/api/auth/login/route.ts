@@ -11,12 +11,16 @@ export async function POST(request: Request) {
     return jsonError("Email and password are required.", 400);
   }
 
-  const result = await verifyAuthCredentials(email, password);
-  if (!result) {
-    return jsonError("Invalid email or password.", 401);
-  }
+  try {
+    const result = await verifyAuthCredentials(email, password);
+    if (!result) {
+      return jsonError("Invalid email or password.", 401);
+    }
 
-  const response = jsonSuccess({ user: result.sessionUser }, "Login successful");
-  applySessionCookie(response, result.sessionUser);
-  return response;
+    const response = jsonSuccess({ user: result.sessionUser }, "Login successful");
+    applySessionCookie(response, result.sessionUser);
+    return response;
+  } catch {
+    return jsonError("Unable to sign in right now. Please try again.", 500);
+  }
 }

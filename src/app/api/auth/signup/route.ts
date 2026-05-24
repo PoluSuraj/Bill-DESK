@@ -45,6 +45,9 @@ export async function POST(request: Request) {
     applySessionCookie(response, result.sessionUser);
     return response;
   } catch (error) {
-    return jsonError(error instanceof Error ? error.message : "Unable to create account.", 400);
+    const message = error instanceof Error && error.message.includes("already exists")
+      ? error.message
+      : "Unable to create account right now. Please try again.";
+    return jsonError(message, 400);
   }
 }
