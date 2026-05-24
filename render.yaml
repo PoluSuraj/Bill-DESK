@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: bill-desk
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SHARE_SIGNING_SECRET
+        generateValue: true
+      - key: SOFTWARE_ADMIN_PASSWORD
+        sync: false
+      - key: AUTH_DATA_DIR
+        value: /var/data/billdesk
+    disk:
+      name: bill-desk-auth-data
+      mountPath: /var/data
+      sizeGB: 1

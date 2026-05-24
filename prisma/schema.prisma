@@ -1,0 +1,281 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  CASHIER
+  ACCOUNTANT
+  ADMIN
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  CARD
+  SPLIT
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PAID
+  PARTIAL
+  PENDING
+  CANCELLED
+}
+
+model Shop {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  businessType  String
+  gstNumber     String?
+  phone         String?
+  email         String?
+  address       String?
+  logoUrl       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  branches      Branch[]
+  users         User[]
+  categories    Category[]
+  customers     Customer[]
+  suppliers     Supplier[]
+  products      Product[]
+  invoices      Invoice[]
+  purchases     Purchase[]
+  expenses      Expense[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  subscriptions Subscription[]
+}
+
+model Branch {
+  id           String       @id @default(cuid())
+  shopId       String
+  name         String
+  code         String       @unique
+  address      String?
+  phone        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  shop         Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  attendance   Attendance[]
+  invoices     Invoice[]
+  stockEntries StockEntry[]
+}
+
+model User {
+  id                String       @id @default(cuid())
+  shopId            String
+  name              String
+  email             String       @unique
+  phone             String?
+  passwordHash      String
+  role              UserRole
+  isVerified        Boolean      @default(false)
+  otpCode           String?
+  otpExpiresAt      DateTime?
+  resetToken        String?
+  resetExpiresAt    DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  shop              Shop         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  attendanceRecords Attendance[]
+  auditLogs         AuditLog[]
+}
+
+model Category {
+  id         String      @id @default(cuid())
+  shopId     String
+  name       String
+  parentId   String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  shop       Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  parent     Category?   @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children   Category[]  @relation("CategoryHierarchy")
+  products   Product[]
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  shopId        String
+  categoryId    String?
+  name          String
+  sku           String
+  barcode       String?        @unique
+  description   String?
+  imageUrl      String?
+  purchasePrice Decimal        @db.Decimal(12, 2)
+  salePrice     Decimal        @db.Decimal(12, 2)
+  gstRate       Decimal        @db.Decimal(5, 2)
+  unit          String
+  reorderLevel  Int            @default(10)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  shop          Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  stockEntries  StockEntry[]
+  invoiceItems  InvoiceItem[]
+  purchaseItems PurchaseItem[]
+}
+
+model StockEntry {
+  id           String    @id @default(cuid())
+  productId    String
+  branchId     String
+  quantity     Int
+  movementType String
+  note         String?
+  createdAt    DateTime  @default(now())
+  product      Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  branch       Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model Supplier {
+  id        String     @id @default(cuid())
+  shopId    String
+  name      String
+  phone     String?
+  email     String?
+  gstNumber String?
+  address   String?
+  createdAt DateTime   @default(now())
+  shop      Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  purchases Purchase[]
+}
+
+model Customer {
+  id               String      @id @default(cuid())
+  shopId           String
+  name             String
+  phone            String?
+  email            String?
+  birthDate        DateTime?
+  loyaltyPoints    Int         @default(0)
+  creditBalance    Decimal     @db.Decimal(12, 2) @default(0)
+  preferredChannel String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  shop             Shop        @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  invoices         Invoice[]
+}
+
+model Invoice {
+  id            String         @id @default(cuid())
+  shopId        String
+  branchId      String?
+  customerId    String?
+  invoiceNumber String         @unique
+  status        InvoiceStatus
+  paymentMethod PaymentMethod
+  subTotal      Decimal        @db.Decimal(12, 2)
+  discountTotal Decimal        @db.Decimal(12, 2)
+  taxTotal      Decimal        @db.Decimal(12, 2)
+  grandTotal    Decimal        @db.Decimal(12, 2)
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  shop          Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  branch        Branch?        @relation(fields: [branchId], references: [id])
+  customer      Customer?      @relation(fields: [customerId], references: [id])
+  items         InvoiceItem[]
+}
+
+model InvoiceItem {
+  id        String    @id @default(cuid())
+  invoiceId String
+  productId String
+  quantity  Int
+  unitPrice Decimal   @db.Decimal(12, 2)
+  discount  Decimal   @db.Decimal(12, 2)
+  gstRate   Decimal   @db.Decimal(5, 2)
+  lineTotal Decimal   @db.Decimal(12, 2)
+  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+}
+
+model Purchase {
+  id          String         @id @default(cuid())
+  shopId      String
+  supplierId  String
+  purchaseNo  String         @unique
+  totalAmount Decimal        @db.Decimal(12, 2)
+  createdAt   DateTime       @default(now())
+  shop        Shop           @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  supplier    Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  items       PurchaseItem[]
+}
+
+model PurchaseItem {
+  id         String    @id @default(cuid())
+  purchaseId String
+  productId  String
+  quantity   Int
+  costPrice  Decimal   @db.Decimal(12, 2)
+  purchase   Purchase  @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  product    Product   @relation(fields: [productId], references: [id])
+}
+
+model Expense {
+  id        String    @id @default(cuid())
+  shopId    String
+  title     String
+  amount    Decimal   @db.Decimal(12, 2)
+  category  String
+  spentOn   DateTime
+  createdAt DateTime  @default(now())
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+}
+
+model Attendance {
+  id        String    @id @default(cuid())
+  branchId  String
+  userId    String
+  checkIn   DateTime
+  checkOut  DateTime?
+  status    String
+  branch    Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id        String    @id @default(cuid())
+  shopId    String
+  planName  String
+  status    String
+  startsAt  DateTime
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  shopId    String
+  title     String
+  body      String
+  channel   String
+  seen      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String    @id @default(cuid())
+  shopId    String
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  shop      Shop      @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id])
+}
