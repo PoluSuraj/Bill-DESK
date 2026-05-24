@@ -362,7 +362,7 @@ const blankQuickProductForm = {
 };
 
 const fieldClassName =
-  "w-full rounded-2xl border border-white/10 bg-white/60 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 dark:bg-white/5 dark:text-white";
+  "w-full min-w-0 rounded-2xl border border-white/10 bg-white/60 px-4 py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:bg-white/5 dark:text-white sm:text-base";
 
 export function BillingWorkspace() {
   const products = useAppStore((state) => state.products);
@@ -766,9 +766,9 @@ export function BillingWorkspace() {
     : "";
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+    <div className="grid min-w-0 gap-4 2xl:grid-cols-[1.08fr_0.92fr]">
       <div className="space-y-4">
-        <div className="glass-panel p-5">
+        <div className="glass-panel p-4 sm:p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="section-title">Smart Billing Counter</h2>
@@ -793,7 +793,7 @@ export function BillingWorkspace() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-[1fr_220px_180px]">
+          <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_180px]">
             <div>
               <label className="mb-2 block text-sm font-medium">Product Search</label>
               <input
@@ -847,7 +847,7 @@ export function BillingWorkspace() {
               </label>
             </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium">Customer Name</label>
                 <input
@@ -902,7 +902,7 @@ export function BillingWorkspace() {
               </button>
             </div>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               <input value={quickProductForm.name} onChange={(event) => setQuickProductForm((state) => ({ ...state, name: event.target.value }))} placeholder="Product name" className={fieldClassName} />
               <input value={quickProductForm.sku} onChange={(event) => setQuickProductForm((state) => ({ ...state, sku: event.target.value.toUpperCase() }))} placeholder="SKU / item code" className={fieldClassName} />
               <input value={quickProductForm.barcode} onChange={(event) => setQuickProductForm((state) => ({ ...state, barcode: event.target.value }))} placeholder="Barcode number" className={fieldClassName} />
@@ -916,7 +916,7 @@ export function BillingWorkspace() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {filteredProducts.map((product) => (
               <button
                 key={product.id}
@@ -946,8 +946,8 @@ export function BillingWorkspace() {
       </div>
 
       <div className="space-y-4">
-        <div className="glass-panel p-5">
-          <div className="flex items-center justify-between gap-4">
+        <div className="glass-panel p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div>
               <h3 className="font-display text-2xl font-semibold">Actual Invoice</h3>
               <p className="section-subtitle">Professional bill layout with customer info, GST totals, QR payment, and print support.</p>
@@ -965,7 +965,7 @@ export function BillingWorkspace() {
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">GSTIN {shop.gstNumber}</p>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{shop.phone} • {shop.email}</p>
               </div>
-              <div className="text-right text-sm text-slate-500 dark:text-slate-400">
+              <div className="text-left text-sm text-slate-500 sm:text-right dark:text-slate-400">
                 <p className="font-medium text-slate-900 dark:text-white">{activeInvoice?.invoiceNumber || `${shop.invoicePrefix}-PREVIEW`}</p>
                 <p>{formatDate(activeInvoice?.createdAt || new Date().toISOString())}</p>
                 <p>{activeInvoice?.mode === "GST" ? "GST Invoice" : "Retail Invoice"}</p>
@@ -973,7 +973,7 @@ export function BillingWorkspace() {
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-slate-900/5 p-4 dark:bg-white/5">
                 <p className="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Bill To</p>
                 <p className="mt-2 font-medium">{activeInvoice?.customerName || "Walk-in Customer"}</p>
@@ -988,8 +988,8 @@ export function BillingWorkspace() {
               </div>
             </div>
 
-            <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
-              <table className="min-w-full text-left text-sm">
+            <div className="mt-5 overflow-x-auto rounded-2xl border border-white/10">
+              <table className="min-w-[640px] text-left text-sm">
                 <thead className="bg-slate-900 text-white dark:bg-white dark:text-slate-900">
                   <tr>
                     <th className="px-4 py-3 font-medium">Item</th>
@@ -1016,7 +1016,7 @@ export function BillingWorkspace() {
               </table>
             </div>
 
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_220px]">
+            <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
               <div className="rounded-2xl bg-slate-900/5 p-4 dark:bg-white/5">
                 <div className="flex items-center justify-between text-sm"><span>Subtotal</span><span>{currency(activeInvoice?.subtotal || subtotal)}</span></div>
                 <div className="mt-2 flex items-center justify-between text-sm"><span>Discount</span><span>{currency(activeInvoice?.discount || discount)}</span></div>
@@ -1026,7 +1026,7 @@ export function BillingWorkspace() {
               <div className="rounded-2xl border border-white/10 p-4 text-center">
                 {qrCodeUrl ? (
                   <>
-                    <img src={qrCodeUrl} alt="UPI Payment QR" className="mx-auto h-[180px] w-[180px] rounded-2xl bg-white p-2" />
+                    <img src={qrCodeUrl} alt="UPI Payment QR" className="mx-auto h-40 w-40 sm:h-[180px] sm:w-[180px] rounded-2xl bg-white p-2" />
                     <p className="mt-3 text-sm font-medium">Scan to Pay</p>
                     <p className="mt-1 break-all text-xs text-slate-500 dark:text-slate-400">{shop.upiId}</p>
                   </>
@@ -1040,7 +1040,7 @@ export function BillingWorkspace() {
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {(["Paid", "Pending", "Partial"] as const).map((status) => (
               <button
                 key={status}
@@ -1071,7 +1071,7 @@ export function BillingWorkspace() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                   <div className="inline-flex items-center rounded-2xl border border-white/10">
                     <button type="button" onClick={() => updateCartQuantity(line.id, line.quantity - 1)} className="px-3 py-2">
                       <Minus className="h-4 w-4" />
@@ -1088,16 +1088,16 @@ export function BillingWorkspace() {
                       min={0}
                       value={line.discount}
                       onChange={(event) => updateCartDiscount(line.id, Number(event.target.value))}
-                      className="w-36 rounded-2xl border border-white/10 bg-white/60 px-3 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:bg-white/5 dark:text-white"
+                      className="w-full rounded-2xl sm:w-36 border border-white/10 bg-white/60 px-3 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400 dark:bg-white/5 dark:text-white"
                     />
                   </div>
-                  <span className="ml-auto font-medium">{currency(line.price * line.quantity - line.discount)}</span>
+                  <span className="font-medium sm:ml-auto">{currency(line.price * line.quantity - line.discount)}</span>
                 </div>
               </div>
             )) : null}
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {(["Cash", "UPI", "Card", "Split"] as const).map((method) => (
               <button
                 key={method}
@@ -1114,7 +1114,7 @@ export function BillingWorkspace() {
             ))}
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <button
               type="button"
               onClick={handleFinalBill}

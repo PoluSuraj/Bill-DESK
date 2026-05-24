@@ -57,10 +57,10 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="glass-panel flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
+    <header className="glass-panel flex flex-col gap-4 p-4 xl:flex-row xl:items-center xl:justify-between">
       <div>
         <p className="text-sm uppercase tracking-[0.2em] text-brand-600 dark:text-brand-100">Live Operations</p>
-        <h1 className="font-display text-3xl font-semibold tracking-tight">Run billing, stock, and growth from one desk</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">Run billing, stock, and growth from one desk</h1>
         {currentUser ? (
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Signed in as {currentUser.name} • {currentUser.role}
@@ -68,8 +68,8 @@ export function Topbar() {
         ) : null}
       </div>
 
-      <div className="flex flex-wrap items-start gap-3 lg:justify-end">
-        <div ref={searchContainerRef} className="relative min-w-[280px] flex-1 lg:max-w-[360px]">
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start xl:w-auto xl:justify-end">
+        <div ref={searchContainerRef} className="relative w-full min-w-0 flex-1 sm:min-w-[260px] lg:max-w-[420px]">
           <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/60 px-4 py-3 dark:bg-white/5">
             <Search className="h-4 w-4 text-slate-400" />
             <input
@@ -108,14 +108,14 @@ export function Topbar() {
         <button
           type="button"
           onClick={() => setActionMessage(`${invoices.filter((invoice) => invoice.status !== "Paid").length} invoices still need follow-up.`)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-white/10"
+          className="inline-flex h-11 w-full items-center justify-center rounded-2xl sm:w-11 border border-white/15 bg-white/10"
         >
           <Bell className="h-5 w-5" />
         </button>
         <button
           type="button"
           onClick={() => setActionMessage("AI Assist suggests promoting combo offers and restocking low-stock items first.")}
-          className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-glow dark:bg-white dark:text-slate-900"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 sm:w-auto py-3 text-sm font-medium text-white shadow-glow dark:bg-white dark:text-slate-900"
         >
           <Sparkles className="h-4 w-4" />
           AI Assist
@@ -129,7 +129,7 @@ export function Topbar() {
             logout();
             router.push("/login");
           }}
-          className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/15 sm:w-auto bg-white/10 px-4 py-3 text-sm"
         >
           <LogOut className="h-4 w-4" />
           Logout

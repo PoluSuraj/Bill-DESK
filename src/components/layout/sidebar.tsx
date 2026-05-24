@@ -36,15 +36,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   ];
 
   return (
-    <aside className="glass-panel flex h-full flex-col p-4">
-      <div className="mb-8 flex items-center gap-3 px-2 pt-2">
-        <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-glow">
+    <aside className="glass-panel flex h-full max-h-[calc(100vh-1.5rem)] flex-col overflow-y-auto p-4">
+      <div className="mb-6 flex items-center gap-3 px-2 pt-2">
+        <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-glow">
           <span className="absolute inset-0 rounded-2xl border border-white/30" />
           <ClipboardList className="h-6 w-6" />
         </div>
         <div>
-          <p className="font-display text-lg font-semibold">Bill Desk</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="font-display text-base font-semibold sm:text-lg">Bill Desk</p>
+          <p className="text-xs text-slate-500 sm:text-sm dark:text-slate-400">
             {currentUser?.role === "ADMIN" ? "Platform Admin Console" : "Multi-Business POS Suite"}
           </p>
         </div>
@@ -61,7 +61,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               href={item.href}
               onClick={onNavigate}
               className={cn(
-                "relative flex items-center gap-3 overflow-hidden rounded-2xl px-4 py-3 text-sm font-medium transition",
+                "relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 text-sm sm:px-4 font-medium transition",
                 active
                   ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
                   : "text-slate-600 hover:bg-white/60 dark:text-slate-300 dark:hover:bg-white/5"
@@ -83,7 +83,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         })}
       </nav>
 
-      <div className="mt-auto rounded-3xl bg-slate-950 p-5 text-white dark:bg-white dark:text-slate-950">
+      <div className="mt-auto rounded-3xl bg-slate-950 p-4 sm:p-5 text-white dark:bg-white dark:text-slate-950">
         <p className="font-display text-lg">{currentUser?.role === "ADMIN" ? "Platform Control" : "AI Inventory Signal"}</p>
         <p className="mt-2 text-sm text-white/70 dark:text-slate-600">
           {currentUser?.role === "ADMIN"
