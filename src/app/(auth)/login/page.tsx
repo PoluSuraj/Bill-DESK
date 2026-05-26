@@ -53,38 +53,38 @@ export default function LoginPage() {
     <AuthShell title="Welcome back" subtitle="Secure access for platform admins, shop owners, staff, and accountants.">
       <form onSubmit={submit} className="space-y-4">
         <div>
-          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-300">Email or mobile</label>
-          <input value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white/85 text-slate-950 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500 px-4 py-3 outline-none" placeholder="Enter your registered email" autoComplete="email" required />
+          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-200">Email or mobile</label>
+          <input value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-slate-950 shadow-sm outline-none placeholder:text-slate-400 transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-cyan-100/15 dark:bg-slate-900/70 dark:text-white dark:shadow-inner dark:shadow-white/5 dark:placeholder:text-slate-400 dark:focus:border-cyan-300/60 dark:focus:ring-cyan-300/10" placeholder="Enter your registered email" autoComplete="email" required />
         </div>
         <div>
-          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-300">Password</label>
-          <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" className="w-full rounded-2xl border border-slate-200 bg-white/85 text-slate-950 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500 px-4 py-3 outline-none" placeholder="Enter your password" autoComplete="current-password" required />
+          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-200">Password</label>
+          <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-slate-950 shadow-sm outline-none placeholder:text-slate-400 transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-cyan-100/15 dark:bg-slate-900/70 dark:text-white dark:shadow-inner dark:shadow-white/5 dark:placeholder:text-slate-400 dark:focus:border-cyan-300/60 dark:focus:ring-cyan-300/10" placeholder="Enter your password" autoComplete="current-password" required />
         </div>
         <div>
-          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-300">Role</label>
-          <select value={effectiveRole} onChange={(event) => setRole(event.target.value as UserRole)} className="w-full rounded-2xl border border-slate-200 bg-white/85 text-slate-950 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500 px-4 py-3 outline-none" disabled={softwareAdminSelected}>
+          <label className="mb-2 block text-sm text-slate-700 dark:text-slate-200">Role</label>
+          <select value={effectiveRole} onChange={(event) => setRole(event.target.value as UserRole)} className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-slate-950 shadow-sm outline-none placeholder:text-slate-400 transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-cyan-100/15 dark:bg-slate-900/70 dark:text-white dark:shadow-inner dark:shadow-white/5 dark:placeholder:text-slate-400 dark:focus:border-cyan-300/60 dark:focus:ring-cyan-300/10" disabled={softwareAdminSelected}>
             <option value="OWNER">Shop Owner</option>
             <option value="CASHIER">Staff / Cashier</option>
             <option value="ACCOUNTANT">Accountant</option>
             <option value="ADMIN">Administrator</option>
           </select>
         </div>
-        {error ? <p className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{error}</p> : null}
-        <div className="flex items-center justify-between text-sm text-slate-700 dark:text-slate-300">
+        {error ? <p className="rounded-2xl border border-rose-400/40 dark:border-rose-300/25 bg-rose-500/10 dark:bg-rose-500/15 px-4 py-3 text-sm text-rose-700 dark:text-rose-100">{error}</p> : null}
+        <div className="flex items-center justify-between text-sm text-slate-700 dark:text-slate-200">
           <label className="flex items-center gap-2">
-            <input type="checkbox" className="rounded border-slate-200 bg-white/85 text-slate-950 shadow-sm focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white" defaultChecked />
+            <input type="checkbox" className="rounded border-slate-300 bg-white text-brand-600 shadow-sm focus:ring-4 focus:ring-brand-500/10 dark:border-cyan-100/20 dark:bg-slate-900 dark:text-cyan-300 dark:focus:ring-cyan-300/10" defaultChecked />
             Keep me signed in for this session
           </label>
-          <Link href="/forgot-password" className="text-brand-700 dark:text-brand-100">
+          <Link href="/forgot-password" className="text-brand-700 dark:text-cyan-100">
             Forgot password?
           </Link>
         </div>
-        <button type="submit" disabled={loading} className="w-full rounded-2xl bg-slate-950 px-4 py-3 font-medium text-white shadow-lg shadow-slate-900/15 dark:bg-white dark:text-slate-950 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70">
+        <button type="submit" disabled={loading} className="w-full rounded-2xl bg-slate-950 px-4 py-3 font-medium text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-cyan-100 dark:text-slate-950 dark:shadow-cyan-400/10 dark:hover:bg-white disabled:cursor-not-allowed disabled:opacity-70">
           {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
-      <p className="mt-6 text-sm text-slate-600 dark:text-slate-400">
-        New shop? <Link href="/signup" className="text-brand-700 dark:text-brand-100">Create your workspace</Link>
+      <p className="mt-6 text-sm text-slate-600 dark:text-slate-300">
+        New shop? <Link href="/signup" className="text-brand-700 dark:text-cyan-100">Create your workspace</Link>
       </p>
     </AuthShell>
   );
